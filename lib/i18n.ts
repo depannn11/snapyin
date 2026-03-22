@@ -49,6 +49,20 @@ export const translations = {
     images:     { en: "images",             id: "gambar",                    ru: "изображений",           zh: "张图片",          ar: "صور" },
   },
 
+  // ── Search UI
+  search: {
+    tab_download:  { en: "Download",          id: "Unduh",               ru: "Скачать",           zh: "下载",          ar: "تنزيل" },
+    tab_search:    { en: "Search Videos",     id: "Cari Video",          ru: "Поиск видео",       zh: "搜索视频",       ar: "البحث عن مقاطع" },
+    placeholder:   { en: "Search TikTok videos...", id: "Cari video TikTok...", ru: "Поиск видео TikTok...", zh: "搜索 TikTok 视频...", ar: "ابحث عن مقاطع TikTok..." },
+    btn:           { en: "Search",            id: "Cari",                ru: "Искать",            zh: "搜索",           ar: "بحث" },
+    searching:     { en: "Searching...",      id: "Mencari...",          ru: "Поиск...",          zh: "搜索中...",      ar: "جاري البحث..." },
+    results:       { en: "results for",       id: "hasil untuk",         ru: "результатов для",   zh: "个结果，关键词：", ar: "نتيجة لـ" },
+    no_results:    { en: "No videos found.",  id: "Tidak ada video.",    ru: "Видео не найдено.", zh: "未找到视频。",    ar: "لم يُعثر على مقاطع." },
+    play_preview:  { en: "Preview",           id: "Pratinjau",           ru: "Превью",            zh: "预览",           ar: "معاينة" },
+    load_more:     { en: "Load More",         id: "Muat Lebih Banyak",   ru: "Загрузить ещё",    zh: "加载更多",       ar: "تحميل المزيد" },
+    loading_more:  { en: "Loading...",        id: "Memuat...",           ru: "Загрузка...",       zh: "加载中...",      ar: "جارٍ التحميل..." },
+  },
+
   // ── Error messages ─────────────────────────────────────────────────────────
   err: {
     enter_url:     { en: "Enter a TikTok URL",        id: "Masukkan URL TikTok",         ru: "Введите URL TikTok",         zh: "请输入 TikTok 链接",    ar: "أدخل رابط TikTok" },
