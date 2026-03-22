@@ -6,6 +6,12 @@ function errRes(message: string, status = 400, extra?: object) {
   return NextResponse.json({ success: false, error: message, ...extra }, { status });
 }
 
+// Wrap URL lewat proxy agar tidak CORS di browser
+function proxy(url: string | null | undefined): string | null {
+  if (!url) return null;
+  return `/api/v3/proxy?url=${encodeURIComponent(url)}`;
+}
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q      = searchParams.get("q")?.trim();
@@ -44,34 +50,38 @@ export async function GET(req: NextRequest) {
     }
 
     return NextResponse.json({
-      success: true,
-      query:   q,
-      count:   videos.length,
-      cursor:  json?.data?.cursor ?? 0,
+      success:  true,
+      query:    q,
+      count:    videos.length,
+      cursor:   json?.data?.cursor  ?? 0,
       has_more: json?.data?.has_more ?? false,
-      videos: videos.map((v: Record<string, unknown>) => ({
-        id:       v.video_id ?? v.id ?? null,
-        title:    v.title    ?? "",
-        cover:    v.cover    ?? "",
-        duration: v.duration ?? 0,
-        author: {
-          nickname:  (v.author as Record<string,string>)?.nickname  ?? "",
-          unique_id: (v.author as Record<string,string>)?.unique_id ?? "",
-          avatar:    (v.author as Record<string,string>)?.avatar    ?? "",
-        },
-        stats: {
-          play:    (v.play_count    as number) ?? 0,
-          likes:   (v.digg_count    as number) ?? 0,
-          comment: (v.comment_count as number) ?? 0,
-          share:   (v.share_count   as number) ?? 0,
-        },
-        download: {
-          video_hd:        (v.hdplay as string) ?? (v.play as string) ?? null,
-          video_sd:        (v.play   as string) ?? null,
-          video_watermark: (v.wmplay as string) ?? null,
-          audio:           (v.music  as string) ?? null,
-        },
-      })),
+      videos: videos.map((v: Record<string, unknown>) => {
+        const author = (v.author ?? {}) as Record<string, string>;
+        return {
+          id:       (v.video_id ?? v.id ?? null) as string | null,
+          title:    (v.title    ?? "")  as string,
+          cover:    (v.cover    ?? "")  as string,
+          duration: (v.duration ?? 0)   as number,
+          author: {
+            nickname:  author.nickname  ?? "",
+            unique_id: author.unique_id ?? "",
+            avatar:    author.avatar    ?? "",
+          },
+          stats: {
+            play:    (v.play_count    ?? 0) as number,
+            likes:   (v.digg_count    ?? 0) as number,
+            comment: (v.comment_count ?? 0) as number,
+            share:   (v.share_count   ?? 0) as number,
+          },
+          download: {
+            // semua URL di-proxy agar browser bisa download tanpa CORS
+            video_hd:        proxy((v.hdplay ?? v.play) as string),
+            video_sd:        proxy(v.play  as string),
+            video_watermark: proxy(v.wmplay as string),
+            audio:           proxy(v.music  as string),
+          },
+        };
+      }),
     });
   } catch (e) {
     console.error("Search error:", e);
