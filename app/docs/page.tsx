@@ -230,6 +230,135 @@ if (json.success) {
             </Card>
           </section>
 
+
+          {/* ── TikTok Search API ── */}
+          <section className="mb-12">
+            <div className="flex items-center gap-3 mb-6">
+              <h2 className="text-2xl font-bold">🔍 TikTok Search API</h2>
+              <Badge className="bg-green-500 text-white hover:bg-green-600">NEW</Badge>
+            </div>
+            <p className="text-muted-foreground mb-6">
+              Cari video TikTok berdasarkan keyword. Returns daftar video beserta link download langsung.
+            </p>
+
+            <Card className="mb-6 border-border">
+              <CardContent className="p-6">
+                <div className="flex items-center gap-3 flex-wrap mb-4">
+                  <Badge className="bg-blue-500 text-white hover:bg-blue-600">GET</Badge>
+                  <code className="rounded bg-muted px-3 py-1.5 text-sm font-mono break-all">
+                    /api/v3/tiktok/search
+                  </code>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="border-b border-border">
+                        <th className="text-left py-2 pr-4 font-semibold text-muted-foreground">Parameter</th>
+                        <th className="text-left py-2 pr-4 font-semibold text-muted-foreground">Tipe</th>
+                        <th className="text-left py-2 pr-4 font-semibold text-muted-foreground">Wajib</th>
+                        <th className="text-left py-2 font-semibold text-muted-foreground">Deskripsi</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-border">
+                      <tr>
+                        <td className="py-3 pr-4 font-mono text-xs">q</td>
+                        <td className="py-3 pr-4 text-muted-foreground">string</td>
+                        <td className="py-3 pr-4"><Badge variant="destructive" className="text-xs">Ya</Badge></td>
+                        <td className="py-3 text-muted-foreground">Keyword pencarian</td>
+                      </tr>
+                      <tr>
+                        <td className="py-3 pr-4 font-mono text-xs">count</td>
+                        <td className="py-3 pr-4 text-muted-foreground">number</td>
+                        <td className="py-3 pr-4"><Badge variant="secondary" className="text-xs">Tidak</Badge></td>
+                        <td className="py-3 text-muted-foreground">Jumlah video (default: 20, max: 50)</td>
+                      </tr>
+                      <tr>
+                        <td className="py-3 pr-4 font-mono text-xs">cursor</td>
+                        <td className="py-3 pr-4 text-muted-foreground">number</td>
+                        <td className="py-3 pr-4"><Badge variant="secondary" className="text-xs">Tidak</Badge></td>
+                        <td className="py-3 text-muted-foreground">Offset untuk pagination (default: 0)</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="mb-6 border-border">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">URL Request</h3>
+                <code className="block rounded bg-muted p-4 text-sm font-mono break-all leading-relaxed">
+                  {BASE}/api/v3/tiktok/search?q=funny+cats&count=20&cursor=0
+                </code>
+              </CardContent>
+            </Card>
+
+            <Card className="mb-6 border-border">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">Contoh JavaScript</h3>
+                <pre className="rounded bg-muted p-4 text-sm overflow-x-auto"><code>{`// Search videos
+const res = await fetch(
+  \`https://www.snaptok.my.id/api/v3/tiktok/search?q=\${encodeURIComponent("funny cats")}&count=20\`
+);
+const json = await res.json();
+
+if (json.success) {
+  json.videos.forEach(v => {
+    console.log(v.title);
+    console.log(v.download.video_hd);  // URL download HD
+    console.log(v.download.audio);     // URL download MP3
+  });
+
+  // Pagination — load more
+  if (json.has_more) {
+    const next = await fetch(
+      \`https://www.snaptok.my.id/api/v3/tiktok/search?q=funny+cats&cursor=\${json.cursor}\`
+    );
+  }
+}`}</code></pre>
+              </CardContent>
+            </Card>
+
+            <Card className="border-border">
+              <CardContent className="p-6">
+                <h3 className="font-semibold mb-3 text-sm text-muted-foreground uppercase tracking-wide">Response Sukses</h3>
+                <pre className="rounded bg-muted p-4 text-sm overflow-x-auto"><code>{`{
+  "success": true,
+  "query": "funny cats",
+  "count": 20,
+  "cursor": 20,        // gunakan untuk load more
+  "has_more": true,
+  "videos": [
+    {
+      "id": "7234567890123456789",
+      "title": "Judul video...",
+      "cover": "https://...",
+      "duration": 15,
+      "author": {
+        "nickname": "Username",
+        "unique_id": "username123",
+        "avatar": "https://..."
+      },
+      "stats": {
+        "play": 120000,
+        "likes": 5000,
+        "comment": 300,
+        "share": 150
+      },
+      "download": {
+        "video_hd": "https://...",        // Video HD tanpa watermark
+        "video_sd": "https://...",        // Video SD tanpa watermark
+        "video_watermark": "https://...", // Video dengan watermark
+        "audio": "https://..."            // Audio MP3
+      }
+    }
+    // ... more videos
+  ]
+}`}</code></pre>
+              </CardContent>
+            </Card>
+          </section>
+
           {/* Errors */}
           <section className="mb-12">
             <h2 className="text-2xl font-bold mb-6">Error Response</h2>
